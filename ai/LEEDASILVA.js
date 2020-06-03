@@ -32,7 +32,7 @@ const findBestPath = (state) => {
   for ({ x, y, cardinal } of state.player.coords) {
     arr.push(seeBig(x, y, cardinal, 0))
   }
-  console.log(arr)
+  // console.log(arr)
   return state.player.coords[arr.indexOf(Math.max(...arr))]
 }
 
