@@ -18,36 +18,71 @@ const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 // for now this function will search for enemies
 // the goal is to KILL THEM ALL :D
 // find the enemi that is mos close to has and focus on that one
-const getEnemies = (state) =>
-  state.players.filter((pl) => pl.name !== 'LEEDASILVA')
+const getEnemies = (players) =>
+  players.filter((pl) => !/LEEDASILVA+/g.test(pl.name))
+
+const attackMode = (state) => {
+  let targets = getEnemies(state.players)
+}
 
 // this functions will find the best path, so the path that has more empty spaces
 // so use `isFree`,
 const findBestPath = (state) => {
   let arr = []
-  for ({ x, y, cardinal, direction } of state.player.coords) {
+  for ({ x, y, cardinal } of state.player.coords) {
     arr.push(seeBig(x, y, cardinal, 0))
   }
+  console.log(arr)
   return state.player.coords[arr.indexOf(Math.max(...arr))]
 }
 
+const isAlley = ({ x, y }) => !isFree({ x, y }) || !isInBounds({ x, y })
+
 const seeBig = (x, y, car, count) => {
   if (car === 0) {
+    // console.log(car, x, y, x - 1, x + 1, y + 1)
+    if (
+      isAlley({ x: x + 1, y }) &&
+      isAlley({ x: x, y: y + 1 }) &&
+      isAlley({ x: x - 1, y })
+    )
+      return 0
     return !isFree({ x, y }) || !inBounds(y)
       ? count
       : seeBig(x, y - 1, car, count + 1)
   }
   if (car === 1) {
+    // console.log(car, x, y, x - 1, y + 1, y - 1)
+    if (
+      isAlley({ x, y: y + 1 }) &&
+      isAlley({ x: x - 1, y }) &&
+      isAlley({ x, y: y - 1 })
+    )
+      return 0
     return !isFree({ x, y }) || !inBounds(x)
       ? count
       : seeBig(x + 1, y, car, count + 1)
   }
   if (car === 2) {
+    // console.log(car, x, y, x - 1, x + 1)
+    if (
+      isAlley({ x: x - 1, y }) &&
+      isAlley({ x, y: y - 1 }) &&
+      isAlley({ x: x + 1, y })
+    )
+      return 0
     return !isFree({ x, y }) || !inBounds(y)
       ? count
       : seeBig(x, y + 1, car, count + 1)
   }
   if (car === 3) {
+    // console.log(car, x, y, x + 1, y - 1, y + 1)
+    if (
+      isAlley({ x, y: y - 1 }) &&
+      isAlley({ x: x + 1, y }) &&
+      isAlley({ x, y: y + 1 })
+    )
+      return 0
     return !isFree({ x, y }) || !inBounds(x)
       ? count
       : seeBig(x - 1, y, car, count + 1)
@@ -56,37 +91,14 @@ const seeBig = (x, y, car, count) => {
 
 // `update` this function is called at each turn
 const update = (state) => {
-  // update is called with a state argument that has 2 properties:
-  //   players: an array of all the players
-  //   player: the player for this AI
+  // this IA will have tho states:
+  // - normal state that will try to play it safe
+  //   avoiding the enemies if possible
+  // - attack mode that will search for the enemies and try to trap him
+  //   the attack mode will be for the min of 2 players
 
-  // Each players contains:
-  //   color: A number that represent the color of a player
-  //   name: A string of the player name
-  //   score: A number of the total block collected by this player
-  //   x: The horizontal position of the player
-  //   y: The vertical position of the player
-  //   coords: An array of 4 coordinates of the nearest blocks
-  //     [ NORTH, EAST, SOUTH, WEST ]
-  //                  N
-  //               W  +  E
-  //                  S
-
-  // Each coordinate contains:
-  //   x: The horizontal position
-  //   y: The vertical position
-  //   cardinal: A number between 0 and 3 that represent the cardinal
-  //     [ 0: NORTH, 1: EAST, 2: SOUTH, 3: WEST ]
-  //   direction: A number between 0 and 3 that represent the direction
-  //     [ 0: FORWARD, 1: RIGHT, 2: BACKWARD, 3: LEFT ]
-
-  // console.log('---', state)
-
-  // console.log(getEnemies(state))
-  let best = findBestPath(state)
-
-  // And I return a random available coord
-  return best
+  // return state.players.length <= 2 ? attackMode(state) : findBestPath(state)
+  return findBestPath(state)
 }
 
 // This part of the code should be left untouch since it's initializing
