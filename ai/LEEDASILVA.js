@@ -15,32 +15,122 @@ const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 /***********
  * My functions
  ************/
-// for now this function will search for enemies
-// the goal is to KILL THEM ALL :D
-// find the enemi that is mos close to has and focus on that one
-const getEnemies = (players) =>
-  players.filter((pl) => !/LEEDASILVA+/g.test(pl.name))
+// // for now this function will search for enemies
+// // the goal is to KILL THEM ALL :D
+// // find the enemy that is mos close to has and focus on that one
+// const getEnemies = (players) =>
+//   players.filter((pl) => !/LEEDASILVA+/g.test(pl.name))
 
-const attackMode = (state) => {
-  let targets = getEnemies(state.players)
+// const attackMode = (state) => {
+//   let targets = getEnemies(state.players)
+// }
+const symmetric12 = (x, y, direction) => {
+  if (direction === 1 || direction === 2) {
+    let up = path(x, y - 1, 0, 0)
+    let left = path(x - 1, y, 3, 0)               /////////// isAlley use it to final version
+    return up > left
+      ? 1
+      : up === left && direction === 1
+      ? 0
+      : up === left && direction === 2
+      ? 3
+      : 2
+  }
 }
+const symmetric03 = (x, y, direction) => {
+  if (direction === 3 || direction === 0) {
+    let right = path(x + 1, y, 1, 0)
+    let down = path(x, y + 1, 2, 0)
+    return down > right
+      ? 3
+      : down === right && direction === 3
+      ? 2
+      : down === right && direction === 0
+      ? 1
+      : 0
+  }
+}
+const symmetric01 = (x, y, direction) => {
+  if (direction === 0 || direction === 1) {
+    let down = path(x, y + 1, 2, 0)
+    let left = path(x - 1, y, 3, 0)
+    return down > left
+      ? 1
+      : down === left && direction === 1
+      ? 2
+      : down === left && direction === 0
+      ? 3
+      : 0
+  }
+}
+const symmetric23 = (x, y, direction) => {
+  if (direction === 2 || direction === 3) {
+    let up = path(x, y - 1, 0, 0)
+    let right = path(x + 1, y, 1, 0)
+    return up > right
+      ? 3
+      : up === right && direction === 3
+      ? 0
+      : up === right && direction === 2
+      ? 1
+      : 2
+  }
+}
+
+const isAlley = ({ x, y }) => !isFree({ x, y }) || !isInBounds({ x, y })
 
 // this functions will find the best path, so the path that has more empty spaces
 // so use `isFree`,
 const findBestPath = (state) => {
   let arr = []
-  for ({ x, y, cardinal } of state.player.coords) {
-    arr.push(seeBig(x, y, cardinal, 0))
+
+  if (state.player.cardinal === 0 || state.player.cardinal === 3) {
+    // if it as a block on the symmetric position it must
+    // simulate the symmetric position and see witch path is the best
+    let xad = state.player.x - 1
+    let yad = state.player.y - 1
+    if (!isFree({ x: xad, y: yad })) {
+      return state.player.coords[symmetric03(xad, yad, state.player.cardinal)]
+    }
   }
-  // console.log(arr)
+
+  if (state.player.cardinal === 0 || state.player.cardinal === 1) {
+    // if it as a block on the symmetric position it must
+    // simulate the symmetric position and see witch path is the best
+    let xad = state.player.x + 1
+    let yad = state.player.y - 1
+    if (!isFree({ x: xad, y: yad })) {
+      return state.player.coords[symmetric01(xad, yad, state.player.cardinal)]
+    }
+  }
+  if (state.player.cardinal === 1 || state.player.cardinal === 2) {
+    // if it as a block on the symmetric position it must
+    // simulate the symmetric position and see witch path is the best
+    let xad = state.player.x + 1
+    let yad = state.player.y + 1
+    if (!isFree({ x: xad, y: yad })) {
+      return state.player.coords[symmetric12(xad, yad, state.player.cardinal)]
+    }
+  }
+  if (state.player.cardinal === 2 || state.player.cardinal === 3) {
+    // if it as a block on the symmetric position it must
+    // simulate the symmetric position and see witch path is the best
+    let xad = state.player.x - 1
+    let yad = state.player.y + 1
+    if (!isFree({ x: xad, y: yad })) {
+      return state.player.coords[symmetric23(xad, yad, state.player.cardinal)]
+    }
+  }
+
+  for ({ x, y, cardinal } of state.player.coords) {
+    // if everything is ok it must continue with the best path
+    arr.push(path(x, y, cardinal, 0))
+  }
   return state.player.coords[arr.indexOf(Math.max(...arr))]
 }
 
-const isAlley = ({ x, y }) => !isFree({ x, y }) || !isInBounds({ x, y })
-
-const seeBig = (x, y, car, count) => {
+const path = (x, y, car, count) => {
   if (car === 0) {
-    // console.log(car, x, y, x - 1, x + 1, y + 1)
     if (
       isAlley({ x: x + 1, y }) &&
       isAlley({ x: x, y: y + 1 }) &&
@@ -49,22 +139,20 @@ const seeBig = (x, y, car, count) => {
       return 0
     return !isFree({ x, y }) || !inBounds(y)
       ? count
-      : seeBig(x, y - 1, car, count + 1)
+      : path(x, y - 1, car, count + 1)
   }
   if (car === 1) {
-    // console.log(car, x, y, x - 1, y + 1, y - 1)
     if (
       isAlley({ x, y: y + 1 }) &&
-      isAlley({ x: x - 1, y }) &&
-      isAlley({ x, y: y - 1 })
+      isAlley({ x, y: y - 1 }) &&
+      isAlley({ x: x - 1, y })
     )
       return 0
     return !isFree({ x, y }) || !inBounds(x)
       ? count
-      : seeBig(x + 1, y, car, count + 1)
+      : path(x + 1, y, car, count + 1)
   }
   if (car === 2) {
-    // console.log(car, x, y, x - 1, x + 1)
     if (
       isAlley({ x: x - 1, y }) &&
       isAlley({ x, y: y - 1 }) &&
@@ -73,10 +161,9 @@ const seeBig = (x, y, car, count) => {
       return 0
     return !isFree({ x, y }) || !inBounds(y)
       ? count
-      : seeBig(x, y + 1, car, count + 1)
+      : path(x, y + 1, car, count + 1)
   }
   if (car === 3) {
-    // console.log(car, x, y, x + 1, y - 1, y + 1)
     if (
       isAlley({ x, y: y - 1 }) &&
       isAlley({ x: x + 1, y }) &&
@@ -85,7 +172,7 @@ const seeBig = (x, y, car, count) => {
       return 0
     return !isFree({ x, y }) || !inBounds(x)
       ? count
-      : seeBig(x - 1, y, car, count + 1)
+      : path(x - 1, y, car, count + 1)
   }
 }
 
