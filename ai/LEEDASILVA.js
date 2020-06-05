@@ -30,8 +30,6 @@ const symmetric12 = (x, y, direction) => {
       ? false // all sides occupied 0
       : up === left && direction === 2
       ? 3
-      : line > left
-      ? 2
       : 2
   }
 }
