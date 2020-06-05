@@ -104,7 +104,7 @@ const findBestPath = (state) => {
     let xad = state.player.x + 1
     let yad = state.player.y + 1
     if (!isFree({ x: xad, y: yad })) {
-      console.log(state.player.coords[symmetric12(xad, yad, state.player.cardinal)])
+      console.log(symmetric12(xad, yad, state.player.cardinal))
       return state.player.coords[symmetric12(xad, yad, state.player.cardinal)]
     }
   }
