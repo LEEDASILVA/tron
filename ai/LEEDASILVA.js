@@ -15,7 +15,7 @@ const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 const symmetric12 = (x, y, direction) => {
   if (direction === 1 || direction === 2) {
     let up = path(x, y - 1, 0, 0)
-    let left = path(x - 1, y, 3, 0) /////////// isAlley use it to final version
+    let left = path(x - 1, y, 3, 0)
     // console.log('up left', up, left)
     return up > left
       ? 1
@@ -87,32 +87,51 @@ const findBestPath = (state) => {
   if (state.player.cardinal === 0 || state.player.cardinal === 3) {
     // if it as a block on the symmetric position it must
     // simulate the symmetric position and see witch path is the best
-    let xad = state.player.x - 1
-    let yad = state.player.y - 1
-    if (!isFree({ x: xad, y: yad })) {
-      return state.player.coords[symmetric03(xad, yad, state.player.cardinal)]
+    if (
+      isFree({ x: state.player.coords[0].x, y: state.player.coords[0].y }) &&
+      isFree({ x: state.player.coords[3].x, y: state.player.coords[3].y })
+    ) {
+      let xad = state.player.x - 1
+      let yad = state.player.y - 1
+      if (!isFree({ x: xad, y: yad })) {
+        return state.player.coords[symmetric03(xad, yad, state.player.cardinal)]
+      }
     }
   }
   if (state.player.cardinal === 0 || state.player.cardinal === 1) {
-    let xad = state.player.x + 1
-    let yad = state.player.y - 1
-    if (!isFree({ x: xad, y: yad })) {
-      return state.player.coords[symmetric01(xad, yad, state.player.cardinal)]
+    if (
+      isFree({ x: state.player.coords[0].x, y: state.player.coords[0].y }) &&
+      isFree({ x: state.player.coords[1].x, y: state.player.coords[1].y })
+    ) {
+      let xad = state.player.x + 1
+      let yad = state.player.y - 1
+      if (!isFree({ x: xad, y: yad })) {
+        return state.player.coords[symmetric01(xad, yad, state.player.cardinal)]
+      }
     }
   }
   if (state.player.cardinal === 1 || state.player.cardinal === 2) {
-    let xad = state.player.x + 1
-    let yad = state.player.y + 1
-    if (!isFree({ x: xad, y: yad })) {
-      console.log(symmetric12(xad, yad, state.player.cardinal))
-      return state.player.coords[symmetric12(xad, yad, state.player.cardinal)]
+    if (
+      isFree({ x: state.player.coords[1].x, y: state.player.coords[1].y }) &&
+      isFree({ x: state.player.coords[2].x, y: state.player.coords[2].y })
+    ) {
+      let xad = state.player.x + 1
+      let yad = state.player.y + 1
+      if (!isFree({ x: xad, y: yad })) {
+        return state.player.coords[symmetric12(xad, yad, state.player.cardinal)]
+      }
     }
   }
   if (state.player.cardinal === 2 || state.player.cardinal === 3) {
-    let xad = state.player.x - 1
-    let yad = state.player.y + 1
-    if (!isFree({ x: xad, y: yad })) {
-      return state.player.coords[symmetric23(xad, yad, state.player.cardinal)]
+    if (
+      isFree({ x: state.player.coords[2].x, y: state.player.coords[2].y }) &&
+      isFree({ x: state.player.coords[3].x, y: state.player.coords[3].y })
+    ) {
+      let xad = state.player.x - 1
+      let yad = state.player.y + 1
+      if (!isFree({ x: xad, y: yad })) {
+        return state.player.coords[symmetric23(xad, yad, state.player.cardinal)]
+      }
     }
   }
 
