@@ -30,8 +30,8 @@ const symmetric12 = (x, y, direction) => {
       ? false // all sides occupied 0
       : up === left && direction === 2
       ? 3
-      : line < left
-      ? 3
+      : line > left
+      ? 2
       : 2
   }
 }
@@ -53,8 +53,8 @@ const symmetric03 = (x, y, direction) => {
       ? false // 2
       : down === right && direction === 0
       ? 1
-      : line < right
-      ? 1
+      : line > right
+      ? 0
       : 0
   }
 }
@@ -76,8 +76,8 @@ const symmetric01 = (x, y, direction) => {
       ? false // 2
       : down === left && direction === 0
       ? 3
-      : line < left
-      ? 3
+      : line > left
+      ? 0
       : 0
   }
 }
@@ -99,8 +99,8 @@ const symmetric23 = (x, y, direction) => {
       ? false // 0
       : up === right && direction === 2
       ? 1
-      : line < right
-      ? 1
+      : line > right
+      ? 2
       : 2
   }
 }
