@@ -18,9 +18,9 @@ const symmetric12 = (x, y, direction) => {
     let left = path(x - 1, y, 3, 0)
     let line = path(x, y, direction, 0)
     // console.log('1 2 line up left', line, up, left)
-    return up === -1
+    return (up === -1 || left === -1) && direction === 1
       ? 1
-      : left === -1
+      : (up === -1 || left === -1) && direction === 2
       ? 2
       : up > left || line > up
       ? 1
@@ -41,8 +41,10 @@ const symmetric03 = (x, y, direction) => {
     let down = path(x, y + 1, 2, 0)
     let line = path(x, y, direction, 0)
     // console.log('0 3 down right', line, down, right)
-      return down === -1 || right === -1
+    return (down === -1 || right === -1) && direction === 0
       ? 0
+      : (down === -1 || right === -1) && direction === 3
+      ? 3
       : down > right || line > down // down !== -1 && // here if its a alley it kills it self
       ? 3
       : down === 0 && right === 0
@@ -51,8 +53,6 @@ const symmetric03 = (x, y, direction) => {
       ? false // 2
       : down === right && direction === 0
       ? 1
-      : line > right
-      ? 0
       : 0
   }
 }
@@ -62,9 +62,9 @@ const symmetric01 = (x, y, direction) => {
     let left = path(x - 1, y, 3, 0)
     let line = path(x, y, direction, 0)
     // console.log('0 1 line down left', line, down, left)
-    return down === -1
+    return (down === -1 || left === -1) && direction === 1
       ? 1
-      : left === -1
+      : (down === -1 || left === -1) && direction === 0
       ? 0
       : down > left || line > down // down !== -1 &&
       ? 1
@@ -74,8 +74,6 @@ const symmetric01 = (x, y, direction) => {
       ? false // 2
       : down === left && direction === 0
       ? 3
-      : line > left
-      ? 0
       : 0
   }
 }
@@ -85,7 +83,9 @@ const symmetric23 = (x, y, direction) => {
     let right = path(x + 1, y, 1, 0)
     let line = path(x, y, direction, 0)
     // console.log('2 3 line up right', line, up, right)
-    return up === -1 || right === -1
+    return (up === -1 || right === -1) && direction === 3
+      ? 3
+      : (up === -1 || right === -1) && direction === 2
       ? 2
       : up > right || line > up // up !== -1 &&
       ? 3
@@ -95,8 +95,6 @@ const symmetric23 = (x, y, direction) => {
       ? false // 0
       : up === right && direction === 2
       ? 1
-      : line > right
-      ? 2
       : 2
   }
 }
