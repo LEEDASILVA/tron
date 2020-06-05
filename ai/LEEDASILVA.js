@@ -19,6 +19,8 @@ const symmetric12 = (x, y, direction) => {
     // console.log('up left', up, left)
     return up > left
       ? 1
+      : up === 0 && left === 0
+      ? 0
       : up === left && direction === 1
       ? 0
       : up === left && direction === 2
@@ -33,6 +35,8 @@ const symmetric03 = (x, y, direction) => {
     // console.log('down right', down, right)
     return down > right
       ? 3
+      : down === 0 && right === 0
+      ? 2
       : down === right && direction === 3
       ? 2
       : down === right && direction === 0
@@ -47,6 +51,8 @@ const symmetric01 = (x, y, direction) => {
     // console.log('down left', down, left)
     return down > left
       ? 1
+      : down === 0 && left === 0
+      ? 2
       : down === left && direction === 1
       ? 2
       : down === left && direction === 0
@@ -61,6 +67,8 @@ const symmetric23 = (x, y, direction) => {
     // console.log('up right', up, right)
     return up > right
       ? 3
+      : up === 0 && right === 0
+      ? 0
       : up === right && direction === 3
       ? 0
       : up === right && direction === 2
