@@ -53,6 +53,8 @@ const symmetric03 = (x, y, direction) => {
       ? false // 2
       : down === right && direction === 0
       ? 1
+      : line > right && direction === 3
+      ? 3
       : 0
   }
 }
@@ -74,6 +76,8 @@ const symmetric01 = (x, y, direction) => {
       ? false // 2
       : down === left && direction === 0
       ? 3
+      : line > left && direction === 1
+      ? 1
       : 0
   }
 }
@@ -95,6 +99,8 @@ const symmetric23 = (x, y, direction) => {
       ? false // 0
       : up === right && direction === 2
       ? 1
+      : line > right && direction === 3
+      ? 3
       : 2
   }
 }
