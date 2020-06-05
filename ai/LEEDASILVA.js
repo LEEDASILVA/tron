@@ -85,9 +85,7 @@ const symmetric23 = (x, y, direction) => {
     let right = path(x + 1, y, 1, 0)
     let line = path(x, y, direction, 0)
     // console.log('2 3 line up right', line, up, right)
-    return up === -1
-      ? 3
-      : right === -1
+    return up === -1 || right === -1
       ? 2
       : up > right || line > up // up !== -1 &&
       ? 3
