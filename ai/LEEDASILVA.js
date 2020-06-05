@@ -10,21 +10,28 @@ const isInBounds = ({ x, y }) => inBounds(x) && inBounds(y)
 const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
 /***********
- * My functions
+ * My functions // MUST REFACTOR THIS CODE !!!!!!!!!!!!!! VERY BAD!!!! BUT IT WORKS
  ************/
 const symmetric12 = (x, y, direction) => {
   if (direction === 1 || direction === 2) {
     let up = path(x, y - 1, 0, 0)
     let left = path(x - 1, y, 3, 0)
-    // console.log('up left', up, left)
-    return up > left
+    let line = path(x, y, direction, 0)
+    // console.log('1 2 line up left', line, up, left)
+    return up === -1
+      ? 1
+      : left === -1
+      ? 2
+      : up > left || line > up
       ? 1
       : up === 0 && left === 0
-      ? 0
+      ? 'nop'
       : up === left && direction === 1
-      ? 0
+      ? false // all sides occupied 0
       : up === left && direction === 2
       ? 3
+      : line > up
+      ? 2
       : 2
   }
 }
@@ -32,15 +39,22 @@ const symmetric03 = (x, y, direction) => {
   if (direction === 3 || direction === 0) {
     let right = path(x + 1, y, 1, 0)
     let down = path(x, y + 1, 2, 0)
-    // console.log('down right', down, right)
-    return down > right
+    let line = path(x, y, direction, 0)
+    // console.log('0 3 down right', line, down, right)
+    return down === -1
+      ? 3
+      : right === -1
+      ? 0
+      : down > right || line > down // down !== -1 && // here if its a alley it kills it self
       ? 3
       : down === 0 && right === 0
-      ? 2
+      ? 'nop'
       : down === right && direction === 3
-      ? 2
+      ? false // 2
       : down === right && direction === 0
       ? 1
+      : right !== -1 && line > right
+      ? 0
       : 0
   }
 }
@@ -48,15 +62,22 @@ const symmetric01 = (x, y, direction) => {
   if (direction === 0 || direction === 1) {
     let down = path(x, y + 1, 2, 0)
     let left = path(x - 1, y, 3, 0)
-    // console.log('down left', down, left)
-    return down > left
+    let line = path(x, y, direction, 0)
+    // console.log('0 1 line down left', line, down, left)
+    return down === -1
+      ? 1
+      : left === -1
+      ? 0
+      : down > left || line > down // down !== -1 &&
       ? 1
       : down === 0 && left === 0
-      ? 2
+      ? 'nop'
       : down === left && direction === 1
-      ? 2
+      ? false // 2
       : down === left && direction === 0
       ? 3
+      : left !== -1 && line > left
+      ? 0
       : 0
   }
 }
@@ -64,15 +85,22 @@ const symmetric23 = (x, y, direction) => {
   if (direction === 2 || direction === 3) {
     let up = path(x, y - 1, 0, 0)
     let right = path(x + 1, y, 1, 0)
-    // console.log('up right', up, right)
-    return up > right
+    let line = path(x, y, direction, 0)
+    // console.log('2 3 line up right', line, up, right)
+    return up === -1
+      ? 3
+      : right === -1
+      ? 2
+      : up > right || line > up // up !== -1 &&
       ? 3
       : up === 0 && right === 0
-      ? 0
+      ? 'nop'
       : up === right && direction === 3
-      ? 0
+      ? false // 0
       : up === right && direction === 2
       ? 1
+      : right !== -1 && line > right
+      ? 2
       : 2
   }
 }
@@ -84,54 +112,42 @@ const isAlley = ({ x, y }) => !isFree({ x, y }) || !isInBounds({ x, y })
 const findBestPath = (state) => {
   let arr = []
 
+  if (state.player.cardinal === 2 || state.player.cardinal === 3) {
+    let xad = state.player.x - 1
+    let yad = state.player.y + 1
+    const car = symmetric23(xad, yad, state.player.cardinal)
+    if (!isFree({ x: xad, y: yad }) && car !== 'nop') {
+      const index = car === false ? 0 : car
+      return state.player.coords[index]
+    }
+  }
   if (state.player.cardinal === 0 || state.player.cardinal === 3) {
     // if it as a block on the symmetric position it must
     // simulate the symmetric position and see witch path is the best
-    if (
-      isFree({ x: state.player.coords[0].x, y: state.player.coords[0].y }) &&
-      isFree({ x: state.player.coords[3].x, y: state.player.coords[3].y })
-    ) {
-      let xad = state.player.x - 1
-      let yad = state.player.y - 1
-      if (!isFree({ x: xad, y: yad })) {
-        return state.player.coords[symmetric03(xad, yad, state.player.cardinal)]
-      }
+    let xad = state.player.x - 1
+    let yad = state.player.y - 1
+    const car = symmetric03(xad, yad, state.player.cardinal)
+    if (!isFree({ x: xad, y: yad }) && car !== 'nop') {
+      const index = car === false ? 2 : car
+      return state.player.coords[index]
     }
   }
   if (state.player.cardinal === 0 || state.player.cardinal === 1) {
-    if (
-      isFree({ x: state.player.coords[0].x, y: state.player.coords[0].y }) &&
-      isFree({ x: state.player.coords[1].x, y: state.player.coords[1].y })
-    ) {
-      let xad = state.player.x + 1
-      let yad = state.player.y - 1
-      if (!isFree({ x: xad, y: yad })) {
-        return state.player.coords[symmetric01(xad, yad, state.player.cardinal)]
-      }
+    let xad = state.player.x + 1
+    let yad = state.player.y - 1
+    const car = symmetric01(xad, yad, state.player.cardinal)
+    if (!isFree({ x: xad, y: yad }) && car !== 'nop') {
+      const index = car === false ? 2 : car
+      return state.player.coords[index]
     }
   }
   if (state.player.cardinal === 1 || state.player.cardinal === 2) {
-    if (
-      isFree({ x: state.player.coords[1].x, y: state.player.coords[1].y }) &&
-      isFree({ x: state.player.coords[2].x, y: state.player.coords[2].y })
-    ) {
-      let xad = state.player.x + 1
-      let yad = state.player.y + 1
-      if (!isFree({ x: xad, y: yad })) {
-        return state.player.coords[symmetric12(xad, yad, state.player.cardinal)]
-      }
-    }
-  }
-  if (state.player.cardinal === 2 || state.player.cardinal === 3) {
-    if (
-      isFree({ x: state.player.coords[2].x, y: state.player.coords[2].y }) &&
-      isFree({ x: state.player.coords[3].x, y: state.player.coords[3].y })
-    ) {
-      let xad = state.player.x - 1
-      let yad = state.player.y + 1
-      if (!isFree({ x: xad, y: yad })) {
-        return state.player.coords[symmetric23(xad, yad, state.player.cardinal)]
-      }
+    let xad = state.player.x + 1
+    let yad = state.player.y + 1
+    const car = symmetric12(xad, yad, state.player.cardinal)
+    if (!isFree({ x: xad, y: yad }) && car !== 'nop') {
+      const index = car === false ? 0 : car
+      return state.player.coords[index]
     }
   }
 
@@ -142,9 +158,11 @@ const findBestPath = (state) => {
   return state.player.coords[arr.indexOf(Math.max(...arr))]
 }
 
+// recursion
 const path = (x, y, car, count) => {
   if (car <= 0) {
     if (
+      isFree({ x, y }) &&
       isAlley({ x: x + 1, y }) &&
       isAlley({ x: x, y: y - 1 }) &&
       isAlley({ x: x - 1, y })
@@ -156,6 +174,7 @@ const path = (x, y, car, count) => {
   }
   if (car === 1) {
     if (
+      isFree({ x, y }) &&
       isAlley({ x, y: y + 1 }) &&
       isAlley({ x, y: y - 1 }) &&
       isAlley({ x: x + 1, y })
@@ -167,6 +186,7 @@ const path = (x, y, car, count) => {
   }
   if (car === 2) {
     if (
+      isFree({ x, y }) &&
       isAlley({ x: x - 1, y }) &&
       isAlley({ x, y: y + 1 }) &&
       isAlley({ x: x + 1, y })
@@ -178,6 +198,7 @@ const path = (x, y, car, count) => {
   }
   if (car === 3) {
     if (
+      isFree({ x, y }) &&
       isAlley({ x, y: y - 1 }) &&
       isAlley({ x: x - 1, y }) &&
       isAlley({ x, y: y + 1 })
@@ -191,14 +212,6 @@ const path = (x, y, car, count) => {
 
 // `update` this function is called at each turn
 const update = (state) => {
-  // this IA will have tho states:
-  // - normal state that will try to play it safe
-  //   avoiding the enemies if possible
-  // - attack mode that will search for the enemies and try to trap him
-  //   the attack mode will be for the min of 2 players
-
-  // console.log(state.player)
-
   // return state.players.length <= 2 ? attackMode(state) : findBestPath(state)
   return findBestPath(state)
 }
