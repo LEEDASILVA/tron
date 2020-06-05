@@ -41,9 +41,7 @@ const symmetric03 = (x, y, direction) => {
     let down = path(x, y + 1, 2, 0)
     let line = path(x, y, direction, 0)
     // console.log('0 3 down right', line, down, right)
-    return down === -1
-      ? 3
-      : right === -1
+      return down === -1 || right === -1
       ? 0
       : down > right || line > down // down !== -1 && // here if its a alley it kills it self
       ? 3
