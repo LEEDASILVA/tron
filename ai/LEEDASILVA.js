@@ -40,7 +40,7 @@ const symmetric03 = (x, y, direction) => {
     let right = path(x + 1, y, 1, 0)
     let down = path(x, y + 1, 2, 0)
     let line = path(x, y, direction, 0)
-    // console.log('0 3 down right', line, down, right)
+    console.log('0 3 down right', line, down, right)
     return (down === -1 || right === -1) && direction === 0
       ? 0
       : (down === -1 || right === -1) && direction === 3
