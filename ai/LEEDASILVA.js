@@ -14,14 +14,22 @@ const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
  ************/
 const symmetric12 = (x, y, direction) => {
   if (direction === 1 || direction === 2) {
-    let up = path(x, y - 1, 0, 0)
-    let left = path(x - 1, y, 3, 0)
+    let up = calDistance(x, y - 1, 0, 0)
+    let left = calDistance(x - 1, y, 3, 0)
     let line =
       direction === 1
-        ? path(x, y - 1, direction, 0)
-        : path(x - 1, y, direction, 0)
+        ? calDistance(x, y - 1, direction, 0)
+        : calDistance(x - 1, y, direction, 0)
     // console.log('1 2 line up left', line, up, left)
-    return (up === -1 || left === -1) && direction === 1
+    return line === -1 && !isFree({ x, y: y + 1 }) && direction === 1
+      ? 0
+      : line === -1 && !isFree({ x, y: y - 1 }) && direction === 1
+      ? 2
+      : line === -1 && !isFree({ x: x + 1, y }) && direction === 2
+      ? 3
+      : line === -1 && !isFree({ x: x - 1, y }) && direction === 2
+      ? 1
+      : (up === -1 || left === -1) && direction === 1
       ? 1
       : (up === -1 || left === -1) && direction === 2
       ? 2
@@ -31,23 +39,33 @@ const symmetric12 = (x, y, direction) => {
       ? false // all sides occupied 0
       : up === left && direction === 2
       ? 3
-      : up > left || (line > up && line > left && direction === 1)
-      ? 1
-      : up < left || (line > up && line > left && direction === 2)
+      : line > up && line > left && direction === 2
       ? 2
+      : line > up && line > left && direction === 1
+      ? 1
+      : up > left
+      ? 1
       : 2
   }
 }
 const symmetric03 = (x, y, direction) => {
   if (direction === 3 || direction === 0) {
-    let right = path(x + 1, y, 1, 0)
-    let down = path(x, y + 1, 2, 0)
+    let right = calDistance(x + 1, y, 1, 0)
+    let down = calDistance(x, y + 1, 2, 0)
     let line =
       direction === 0
-        ? path(x + 1, y, direction, 0)
-        : path(x, y + 1, direction, 0)
+        ? calDistance(x + 1, y, direction, 0)
+        : calDistance(x, y + 1, direction, 0)
     // console.log('0 3 down right', line, down, right)
-    return (down === -1 || right === -1) && direction === 0
+    return line === -1 && !isFree({ x, y: y + 1 }) && direction === 3
+      ? 0
+      : line === -1 && !isFree({ x, y: y - 1 }) && direction === 3
+      ? 2
+      : line === -1 && !isFree({ x: x + 1, y }) && direction === 0
+      ? 3
+      : line === -1 && !isFree({ x: x - 1, y }) && direction === 0
+      ? 1
+      : (down === -1 || right === -1) && direction === 0
       ? 0
       : (down === -1 || right === -1) && direction === 3
       ? 3
@@ -57,7 +75,7 @@ const symmetric03 = (x, y, direction) => {
       ? false // 2
       : down === right && direction === 0
       ? 1
-      : down > right || (line > down && line > right && direction === 3) // down !== -1 && // here if its a alley it kills it self
+      : down > right || (line > down && line > right && direction === 3)
       ? 3
       : down < right || (line > right && line > down && direction === 0)
       ? 0
@@ -66,13 +84,21 @@ const symmetric03 = (x, y, direction) => {
 }
 const symmetric01 = (x, y, direction) => {
   if (direction === 0 || direction === 1) {
-    let down = path(x, y + 1, 2, 0)
-    let left = path(x - 1, y, 3, 0)
+    let down = calDistance(x, y + 1, 2, 0)
+    let left = calDistance(x - 1, y, 3, 0)
     let line =
       direction === 0
-        ? path(x - 1, y, direction, 0)
-        : path(x, y + 1, direction, 0)
-    return (down === -1 || left === -1) && direction === 1
+        ? calDistance(x - 1, y, direction, 0)
+        : calDistance(x, y + 1, direction, 0)
+    return line === -1 && !isFree({ x, y: y + 1 }) && direction === 1
+      ? 0
+      : line === -1 && !isFree({ x, y: y - 1 }) && direction === 1
+      ? 2
+      : line === -1 && !isFree({ x: x + 1, y }) && direction === 0
+      ? 3
+      : line === -1 && !isFree({ x: x - 1, y }) && direction === 0
+      ? 1
+      : (down === -1 || left === -1) && direction === 1
       ? 1
       : (down === -1 || left === -1) && direction === 0
       ? 0
@@ -82,7 +108,7 @@ const symmetric01 = (x, y, direction) => {
       ? false // 2
       : down === left && direction === 0
       ? 3
-      : down > left || (line > down && line > left && direction === 1) // down !== -1 &&
+      : down > left || (line > down && line > left && direction === 1)
       ? 1
       : down < left || (line > down && line > left && direction === 0)
       ? 0
@@ -91,14 +117,22 @@ const symmetric01 = (x, y, direction) => {
 }
 const symmetric23 = (x, y, direction) => {
   if (direction === 2 || direction === 3) {
-    let up = path(x, y - 1, 0, 0)
-    let right = path(x + 1, y, 1, 0)
+    let up = calDistance(x, y - 1, 0, 0)
+    let right = calDistance(x + 1, y, 1, 0)
     let line =
       direction === 2
-        ? path(x + 1, y, direction, 2)
-        : path(x, y - 1, direction, 3)
+        ? calDistance(x + 1, y, direction, 0)
+        : calDistance(x, y - 1, direction, 0)
     // console.log('2 3 line up right', line, up, right)
-    return (up === -1 || right === -1) && direction === 3
+    return line === -1 && !isFree({ x, y: y + 1 }) && direction === 3
+      ? 0
+      : line === -1 && !isFree({ x, y: y - 1 }) && direction === 3
+      ? 2
+      : line === -1 && !isFree({ x: x + 1, y }) && direction === 2
+      ? 3
+      : line === -1 && !isFree({ x: x - 1, y }) && direction === 2
+      ? 1
+      : (up === -1 || right === -1) && direction === 3
       ? 3
       : (up === -1 || right === -1) && direction === 2
       ? 2
@@ -108,7 +142,7 @@ const symmetric23 = (x, y, direction) => {
       ? false // 0
       : up === right && direction === 2
       ? 1
-      : up > right || (line > up && line > right && direction === 3) // up !== -1 &&
+      : up > right || (line > up && line > right && direction === 3)
       ? 3
       : up < right || (line > right && line > right && direction === 2)
       ? 2
@@ -164,13 +198,13 @@ const findBestPath = (state) => {
 
   for ({ x, y, cardinal } of state.player.coords) {
     // if everything is ok it must continue with the best path
-    arr.push(path(x, y, cardinal, 0))
+    arr.push(calDistance(x, y, cardinal, 0))
   }
   return state.player.coords[arr.indexOf(Math.max(...arr))]
 }
 
 // recursion
-const path = (x, y, car, count) => {
+const calDistance = (x, y, car, count) => {
   if (car <= 0) {
     if (
       isFree({ x, y }) &&
@@ -181,7 +215,7 @@ const path = (x, y, car, count) => {
       return -1
     return !isFree({ x, y }) || !isFree({ x, y: y - 1 }) || !inBounds(y - 1)
       ? count
-      : path(x, y - 1, car, count + 1)
+      : calDistance(x, y - 1, car, count + 1)
   }
   if (car === 1) {
     if (
@@ -193,7 +227,7 @@ const path = (x, y, car, count) => {
       return -1
     return !isFree({ x, y }) || !isFree({ x: x + 1, y }) || !inBounds(x + 1)
       ? count
-      : path(x + 1, y, car, count + 1)
+      : calDistance(x + 1, y, car, count + 1)
   }
   if (car === 2) {
     if (
@@ -205,7 +239,7 @@ const path = (x, y, car, count) => {
       return -1
     return !isFree({ x, y }) || !isFree({ x, y: y + 1 }) || !inBounds(y + 1)
       ? count
-      : path(x, y + 1, car, count + 1)
+      : calDistance(x, y + 1, car, count + 1)
   }
   if (car === 3) {
     if (
@@ -217,11 +251,10 @@ const path = (x, y, car, count) => {
       return -1
     return !isFree({ x, y }) || !isFree({ x: x - 1, y }) || !inBounds(x - 1)
       ? count
-      : path(x - 1, y, car, count + 1)
+      : calDistance(x - 1, y, car, count + 1)
   }
 }
 
-// `update` this function is called at each turn
 const update = (state) => {
   // return state.players.length <= 2 ? attackMode(state) : findBestPath(state)
   return findBestPath(state)
