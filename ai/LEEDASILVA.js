@@ -82,9 +82,9 @@ const symmetric01 = (x, y, direction) => {
       ? false // 2
       : down === left && direction === 0
       ? 3
-      : down > left || (line > down && line > left && direction === 0) // down !== -1 &&
+      : down > left || (line > down && line > left && direction === 1) // down !== -1 &&
       ? 1
-      : down < left || (line > down && line > left && direction === 1)
+      : down < left || (line > down && line > left && direction === 0)
       ? 0
       : 0
   }
