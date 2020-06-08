@@ -10,7 +10,7 @@ const isInBounds = ({ x, y }) => inBounds(x) && inBounds(y)
 const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
 /***********
- * My functions // MUST REFACTOR THIS CODE !!!!!!!!!!!!!! VERY BAD!!!! BUT IT WORKS
+ * My functions
  ************/
 const isAlley = ({ x, y }) => !isFree({ x, y }) || !isInBounds({ x, y })
 
