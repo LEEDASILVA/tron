@@ -29,7 +29,7 @@ const findBestPath = (state) => {
   ) {
     let xad = state.player.x - 1
     let yad = state.player.y - 1
-
+// [right, line0, line3, down]
     let choose = [
       calDistance(xad + 1, yad, 1, 0),
       calDistance(state.player.x, state.player.y - 1, 0, 0),
@@ -50,7 +50,7 @@ const findBestPath = (state) => {
     let xad = state.player.x + 1
     let yad = state.player.y - 1
     // choose will save the biggest path to be chosen
-    // [ down, line1, line0, left ]
+    // [ down, line1, line0, left ]6
     let choose = [
       calDistance(xad, yad + 1, 2, 0),
       calDistance(state.player.x + 1, state.player.y, 1, 0),
@@ -78,6 +78,8 @@ const findBestPath = (state) => {
       calDistance(state.player.x + 1, state.player.y, 1, 0),
       calDistance(xad, yad - 1, 0, 0),
     ]
+    console.log(choose)
+
     let index = choose.indexOf(Math.max(...choose))
     return index === 0 || index === 1
       ? state.player.coords[2]
@@ -99,12 +101,10 @@ const findBestPath = (state) => {
       calDistance(state.player.x - 1, state.player.y, 3, 0),
       calDistance(xad, yad - 1, 0, 0),
     ]
-    console.log('kdmfods', choose)
-
     let index = choose.indexOf(Math.max(...choose))
     return index === 0 || index === 1
       ? state.player.coords[2]
-      : state.player.coords[1]
+      : state.player.coords[3]
   }
 
   for ({ x, y, cardinal } of state.player.coords) {
