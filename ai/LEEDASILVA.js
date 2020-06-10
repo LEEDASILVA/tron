@@ -41,6 +41,7 @@ const findBestPath = (state) => {
       ? state.player.coords[0]
       : state.player.coords[3]
   }
+  console.log('merda')
   if (
     (car === 1 || car === 0) &&
     !isFree({ x: state.player.x + 1, y: state.player.y - 1 }) &&
