@@ -41,7 +41,6 @@ const findBestPath = (state) => {
       ? state.player.coords[0]
       : state.player.coords[3]
   }
-  console.log('merda')
   if (
     (car === 1 || car === 0) &&
     !isFree({ x: state.player.x + 1, y: state.player.y - 1 }) &&
@@ -58,7 +57,6 @@ const findBestPath = (state) => {
       calDistance(state.player.x, state.player.y - 1, 0, 0),
       calDistance(xad - 1, yad, 3, 0),
     ]
-    console.log('kdmfods', choose)
     let index = choose.indexOf(Math.max(...choose))
     return index === 0 || index === 1
       ? state.player.coords[1]
@@ -97,14 +95,16 @@ const findBestPath = (state) => {
     // [ right, line2, line3, up ]
     let choose = [
       calDistance(xad + 1, yad, 1, 0),
-      calDistance(state.player.x - 1, state.player.y, 2, 0),
-      calDistance(state.player.x, state.player.y + 1, 3, 0),
+      calDistance(state.player.x, state.player.y + 1, 2, 0),
+      calDistance(state.player.x - 1, state.player.y, 3, 0),
       calDistance(xad, yad - 1, 0, 0),
     ]
+    console.log('kdmfods', choose)
+
     let index = choose.indexOf(Math.max(...choose))
     return index === 0 || index === 1
-      ? state.player.coords[3]
-      : state.player.coords[2]
+      ? state.player.coords[2]
+      : state.player.coords[1]
   }
 
   for ({ x, y, cardinal } of state.player.coords) {
