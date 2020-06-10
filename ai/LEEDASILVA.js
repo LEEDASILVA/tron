@@ -32,8 +32,8 @@ const findBestPath = (state) => {
 
     let choose = [
       calDistance(xad + 1, yad, 1, 0),
-      calDistance(state.player.x, state.player.y - 1, car, 0),
-      calDistance(state.player.x - 1, state.player.y, car, 0),
+      calDistance(state.player.x, state.player.y - 1, 0, 0),
+      calDistance(state.player.x - 1, state.player.y, 3, 0),
       calDistance(xad, yad + 1, 2, 0),
     ]
     let index = choose.indexOf(Math.max(...choose))
@@ -53,8 +53,8 @@ const findBestPath = (state) => {
     // [ down, line1, line0, left ]
     let choose = [
       calDistance(xad, yad + 1, 2, 0),
-      calDistance(state.player.x + 1, state.player.y, car, 0),
-      calDistance(state.player.x, state.player.y - 1, car, 0),
+      calDistance(state.player.x + 1, state.player.y, 1, 0),
+      calDistance(state.player.x, state.player.y - 1, 0, 0),
       calDistance(xad - 1, yad, 3, 0),
     ]
     let index = choose.indexOf(Math.max(...choose))
@@ -74,8 +74,8 @@ const findBestPath = (state) => {
     // [ left, line2, line1, up ]
     let choose = [
       calDistance(xad - 1, yad, 3, 0),
-      calDistance(state.player.x, state.player.y + 1, car, 0),
-      calDistance(state.player.x + 1, state.player.y, car, 0),
+      calDistance(state.player.x, state.player.y + 1, 2, 0),
+      calDistance(state.player.x + 1, state.player.y, 1, 0),
       calDistance(xad, yad - 1, 0, 0),
     ]
     let index = choose.indexOf(Math.max(...choose))
@@ -95,8 +95,8 @@ const findBestPath = (state) => {
     // [ right, line2, line3, up ]
     let choose = [
       calDistance(xad + 1, yad, 1, 0),
-      calDistance(state.player.x - 1, state.player.y, car, 0),
-      calDistance(state.player.x, state.player.y + 1, car, 0),
+      calDistance(state.player.x - 1, state.player.y, 2, 0),
+      calDistance(state.player.x, state.player.y + 1, 3, 0),
       calDistance(xad, yad - 1, 0, 0),
     ]
     let index = choose.indexOf(Math.max(...choose))
