@@ -57,6 +57,7 @@ const findBestPath = (state) => {
       calDistance(state.player.x, state.player.y - 1, 0, 0),
       calDistance(xad - 1, yad, 3, 0),
     ]
+    console.log(choose)
     let index = choose.indexOf(Math.max(...choose))
     return index === 0 || index === 1
       ? state.player.coords[1]
